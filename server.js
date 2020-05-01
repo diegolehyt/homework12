@@ -39,7 +39,7 @@ async function connect () {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: '',   // ================ Remember to add your PASSWORD here!
+    password: 'sum182magodeoz',   // ================ Remember to add your PASSWORD here!
     database: 'employees_db'
   })
   console.log('Connected to MySQL as id: ' + connection.threadId)
@@ -47,7 +47,7 @@ async function connect () {
 
 // ------------------------------\ Prompt Menu /----------------------------------
 async function userMenu() {
-    inquirer.prompt({
+    await inquirer.prompt({
         name: "action",
         type: "list",
         message: "What would you like to do?",
@@ -61,35 +61,55 @@ async function userMenu() {
             update_employee_role,
             exit
         ]
-    }).then(function (answer) {
+    }).then(async function (answer) {
         switch (answer.action) {
             case view_employees:
-                viewEmployees();
+                await viewEmployees();
                 break;
             case view_departments:
-                viewDepartments();
+                await viewDepartments();
                 break;
             case view_roles:
-                viewRoles();
+                await viewRoles();
                 break;    
-            case add_department:
-                addDepartment();
-                break;
-            case add_role:
-                addRole();
-                break;
-            case add_employee:
-                addEmployee();
-                break;
-            case update_employee_role:
-                updateEmployeeRole();
-                break;
+            // case add_department:
+            //     addDepartment();
+            //     break;
+            // case add_role:
+            //     addRole();
+            //     break;
+            // case add_employee:
+            //     addEmployee();
+            //     break;
+            // case update_employee_role:
+            //     updateEmployeeRole();
+            //     break;
             case exit:
                 console.log("Employee Tracker has ended");
                 connection.end();
                 break;
         };
     });
+};
+
+// ------------------------------------------------\ Async Functions /---------------------------------------------------
+
+// ----------\ VIEW /------------
+async function viewEmployees () {
+    const [rows] = await connection.query('SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id  INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id')
+    console.table(rows)
+    await userMenu();
+}
+
+async function viewDepartments() {
+    const [rows] = await connection.query('SELECT * FROM department')
+    console.table(rows)
+    await userMenu();
+};
+async function viewRoles() {
+    const [rows] = await connection.query('SELECT role.id, title, salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id')
+    console.table(rows)
+    await userMenu();
 };
 
 
