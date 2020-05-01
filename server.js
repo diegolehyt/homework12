@@ -20,6 +20,9 @@ const add_employee = "Add employee";
 const update_employee_role = "Update employee role";
 const exit = "Exit";
 
+// names from db 
+const nameList = [];
+
 // Principal Function to trigger the application
 main()
 
@@ -27,6 +30,7 @@ main()
 async function main () {
   try {
     await connect()
+    await namesGenerator()
     await userMenu()
   } catch (err) {
     console.error(err)
@@ -71,19 +75,19 @@ async function userMenu() {
                 break;
             case view_roles:
                 await viewRoles();
-                break;    
-            // case add_department:
-            //     addDepartment();
-            //     break;
-            // case add_role:
-            //     addRole();
-            //     break;
-            // case add_employee:
-            //     addEmployee();
-            //     break;
-            // case update_employee_role:
-            //     updateEmployeeRole();
-            //     break;
+                break;
+            case add_employee:
+                await addEmployee();
+                break;        
+            case add_department:
+                await addDepartment();
+                break;
+            case add_role:
+                await addRole();
+                break;
+            case update_employee_role:
+                await updateEmployeeRole();
+                break;
             case exit:
                 console.log("Employee Tracker has ended");
                 connection.end();
@@ -113,6 +117,77 @@ async function viewRoles() {
 };
 
 // ----------\ ADD /------------
+// Employee
+async function addEmployee() {
+    
+    await inquirer.prompt([{
+        message: 'Enter Name:',
+        name: 'firstName'
+      },
+      {
+        message: 'Enter Last Name:',
+        name: 'lastName'
+      },
+      {
+        type: 'list',  
+        message: 'Select a Role',
+        name: 'role',
+        choices: await namesGenerator()
+      },
+      {
+        type: 'list',  
+        message: 'Who is the Manager',
+        name: 'manager',
+        choices: await namesGenerator()
+      }
+    ]).then(async function ({ firstName, lastName, role, manager }) {
+        const [rows] = await connection.query('INSERT INTO department SET ?',{
+                name: department
+            })
+        console.log(rows)
+        await userMenu()
+    })
+
+}
+// Department 
+async function addDepartment() {
+    await inquirer.prompt(
+        {
+            name: "department",
+            type: "input",
+            message: "What department would you like to add?"
+        }
+
+    ).then(async function ({ department }) {
+        const [rows] = await connection.query('INSERT INTO department SET ?',{
+                name: department
+            })
+        console.log(rows)
+        await userMenu()
+    })
+}
+
+async function addRole() {
+
+}
 
 // ----------\ UPDATE /------------
+async function updateEmployeeRole() {
 
+}
+
+
+//------------------------------------\ Database /-----------------------------------
+// NAMES
+async function namesGenerator() {
+    const [names] = await connection.query('SELECT first_name, last_name FROM employee')
+    
+    names.forEach(employeeName => {
+        const fullName = employeeName.first_name + ' ' + employeeName.last_name
+        nameList.push(fullName)
+    });
+    // console.log(nameList) =========== namesList Check
+    return nameList
+}
+
+// ROLES
