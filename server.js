@@ -39,7 +39,7 @@ async function connect () {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'sum182magodeoz',   // ================ Remember to add your PASSWORD here!
+    password: '',   // ================ Remember to add your PASSWORD here!
     database: 'employees_db'
   })
   console.log('Connected to MySQL as id: ' + connection.threadId)
@@ -112,4 +112,7 @@ async function viewRoles() {
     await userMenu();
 };
 
+// ----------\ ADD /------------
+
+// ----------\ UPDATE /------------
 
