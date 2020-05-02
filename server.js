@@ -23,6 +23,7 @@ const exit = "Exit";
 // ini Arrays to display updated choices 
 const nameList = [];
 const rolesList = [];
+const departmentsList = [];
 
 // Principal Function to trigger the application
 main()
@@ -120,7 +121,7 @@ async function viewRoles() {
     await userMenu();
 };
 
-// ----------\ ADD /------------
+// ------------\ ADD /--------------
 // creates new Employee into the db
 async function addEmployee() {
     
@@ -152,7 +153,7 @@ async function addEmployee() {
             role_id: await getRoleId(role),
             manager_id: await getManagerId(manager)
         })
-        console.log('succed')
+        console.log(`succed, new employee: ${firstName} ${lastName}, added`)
         await userMenu()
     })
 
@@ -170,16 +171,43 @@ async function addDepartment() {
         const [rows] = await connection.query('INSERT INTO department SET ?',{
                 name: department
             })
-        console.log(rows)
+        console.log(`Succed, new department: ${department}, added`)
         await userMenu()
     })
 }
 
+// creates new Employee into the db
 async function addRole() {
+    
+    await inquirer.prompt([{
+        message: 'Enter Title:',
+        name: 'title'
+      },
+      {
+        message: 'Enter Salary:',
+        name: 'salary'
+      },
+      {
+        type: 'list',  
+        message: 'Choose Department',
+        name: 'department',
+        choices: await departmentGenerator()
+      }
+    ]).then(async function ({ title, salary, department }) {
+
+        const [rows] = await connection.query('INSERT INTO role SET ?', {
+            title: title,
+            salary: salary,
+            department_id: await getDepartmentId(department)
+        })
+        console.log(`succed, new Role: ${title}, added`)
+        await userMenu()
+    })
 
 }
 
-// ----------\ UPDATE /------------
+
+// ------------\ UPDATE /--------------
 async function updateEmployeeRole() {
 
 }
@@ -194,7 +222,7 @@ async function namesGenerator() {
         const fullName = employeeName.first_name + ' ' + employeeName.last_name
         nameList.push(fullName)
     });
-    // console.log(nameList) // =========== namesList Check
+    // console.log(nameList) // =========== Names List Check
     return nameList
 }
 
@@ -206,10 +234,21 @@ async function rolesGenerator() {
     roles.forEach(role => {
         rolesList.push(role.title)
     });
-    // console.log(rolesList) // =========== rolesList Check
+    // console.log(rolesList) // =========== Roles List Check
     return rolesList
 }
 
+// DEPARTMENTS
+async function departmentGenerator() {
+    const [departments] = await connection.query('SELECT name FROM department')
+    
+    // Convert obj to arr
+    departments.forEach(department => {
+        departmentsList.push(department.name)
+    });
+    // console.log(departmentsList) // =========== Departments List Check
+    return departmentsList
+}
 // ----------------------- \ convert to ID / ----------------------------
 
 async function getManagerId(manager){
@@ -228,3 +267,31 @@ async function getRoleId(role){
     else if (role == 'Legal Team Lead') {return 6}
     else {return 7}
 }
+// async function getDepartmentId(department){
+//     if (department == 'Sales'){ return 1}
+//     else if (department == 'Engineering'){ return 2}
+//     else if (department == 'Finance'){ return 3}
+//     else if (department == 'Legal'){ return 4}
+//     else { return null}
+// }
+
+
+// USE FIND
+async function getDepartmentId (department){
+    const [dpasID] = await connection.query('SELECT id, name FROM department')
+    
+    const dpasList = dpasID.find(dpa => {
+        return dpa.name == department
+    })
+    console.log(dpasList)
+    return dpasList.id
+}
+
+// UPLOAD reference
+// async function updateCharacter() {
+//     const [rows] = await connection.query('UPDATE characters SET ? WHERE ?',[
+//         {name: 'Prince Vegeta'},
+//         {hitpoints: 800}
+//     ])
+//     console.log(rows.affectedRows + 'characters updated')
+// }
