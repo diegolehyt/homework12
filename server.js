@@ -20,8 +20,9 @@ const add_employee = "Add employee";
 const update_employee_role = "Update employee role";
 const exit = "Exit";
 
-// names from db 
+// ini Arrays to display updated choices 
 const nameList = [];
+const rolesList = [];
 
 // Principal Function to trigger the application
 main()
@@ -31,6 +32,7 @@ async function main () {
   try {
     await connect()
     await namesGenerator()
+    await rolesGenerator()
     await userMenu()
   } catch (err) {
     console.error(err)
@@ -99,17 +101,19 @@ async function userMenu() {
 // ------------------------------------------------\ Async Functions /---------------------------------------------------
 
 // ----------\ VIEW /------------
+// Display updated Employees list
 async function viewEmployees () {
     const [rows] = await connection.query('SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id  INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id')
     console.table(rows)
     await userMenu();
 }
-
+// Display updated Departments list
 async function viewDepartments() {
     const [rows] = await connection.query('SELECT * FROM department')
     console.table(rows)
     await userMenu();
 };
+// Display updated Roles list
 async function viewRoles() {
     const [rows] = await connection.query('SELECT role.id, title, salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id')
     console.table(rows)
@@ -117,7 +121,7 @@ async function viewRoles() {
 };
 
 // ----------\ ADD /------------
-// Employee
+// creates new Employee into the db
 async function addEmployee() {
     
     await inquirer.prompt([{
@@ -132,7 +136,7 @@ async function addEmployee() {
         type: 'list',  
         message: 'Select a Role',
         name: 'role',
-        choices: await namesGenerator()
+        choices: await rolesGenerator()
       },
       {
         type: 'list',  
@@ -141,15 +145,19 @@ async function addEmployee() {
         choices: await namesGenerator()
       }
     ]).then(async function ({ firstName, lastName, role, manager }) {
-        const [rows] = await connection.query('INSERT INTO department SET ?',{
-                name: department
-            })
-        console.log(rows)
+
+        const [rows] = await connection.query('INSERT INTO employee SET ?', {
+            first_name: firstName,
+            last_name: lastName,
+            role_id: await getRoleId(role),
+            manager_id: await getManagerId(manager)
+        })
+        console.log('succed')
         await userMenu()
     })
 
 }
-// Department 
+// creates new Department into the db
 async function addDepartment() {
     await inquirer.prompt(
         {
@@ -186,8 +194,37 @@ async function namesGenerator() {
         const fullName = employeeName.first_name + ' ' + employeeName.last_name
         nameList.push(fullName)
     });
-    // console.log(nameList) =========== namesList Check
+    // console.log(nameList) // =========== namesList Check
     return nameList
 }
 
 // ROLES
+async function rolesGenerator() {
+    const [roles] = await connection.query('SELECT title FROM role')
+    
+    // Convert obj to arr
+    roles.forEach(role => {
+        rolesList.push(role.title)
+    });
+    // console.log(rolesList) // =========== rolesList Check
+    return rolesList
+}
+
+// ----------------------- \ convert to ID / ----------------------------
+
+async function getManagerId(manager){
+    if (manager == 'John Doe'){ return 1}
+    else if (manager == 'Mike Chan'){ return 2}
+    else if (manager == 'Ashley Rodriguez'){ return 3}
+    else if (manager == 'Sarah Lourd'){ return 6}
+    else {return 'null'}
+}
+async function getRoleId(role){
+    if (role == 'Sales Lead') {return 1}
+    else if (role == 'Sales Person') {return 2}
+    else if (role == 'Lead Engineer') {return 3}
+    else if (role == 'Software Engineer') {return 4}
+    else if (role == 'Accountant') {return 5}
+    else if (role == 'Legal Team Lead') {return 6}
+    else {return 7}
+}
