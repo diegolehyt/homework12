@@ -7,23 +7,22 @@ const mysql = require('mysql2/promise')
 const inquirer = require('inquirer');
 const consoleT = require('console.table');
 
+// Require local modules
+const db = require('./modules/generate_db.js');
+const cnv = require('./modules/convert_ID.js');
+
 // Connection var
 let connnection
 
 // inquirer menu
-const view_employees = "View Employees";
-const view_departments = "View Departments";
-const view_roles = "View Roles";
-const add_department = "Add Department";
-const add_role = "Add Role";
-const add_employee = "Add Employee";
-const update_employee_role = "Update Employee Role";
-const exit = "Exit";
-
-// ini Arrays to display updated choices 
-const nameList = [];
-const rolesList = [];
-const departmentsList = [];
+const view_employees = 'View Employees';
+const view_departments = 'View Departments';
+const view_roles = 'View Roles';
+const add_department = 'Add Department';
+const add_role = 'Add Role';
+const add_employee = 'Add Employee';
+const update_employee_role = 'Update Employee Role';
+const exit = 'Exit';
 
 // Principal Function to trigger the application
 main()
@@ -44,7 +43,7 @@ async function connect () {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: '',   // ================ Remember to add your PASSWORD here!
+    password: 'sum182magodeoz',   // ================ Remember to add your PASSWORD here!
     database: 'employees_db'
   })
   console.log('Connected to MySQL as id: ' + connection.threadId)
@@ -99,7 +98,7 @@ async function userMenu() {
 
 // ------------------------------------------------\ Async Functions /---------------------------------------------------
 
-// ----------\ VIEW /------------
+// -------------------------\ VIEW /------------------------ \\
 // Display updated Employees list
 async function viewEmployees () {
     const [rows] = await connection.query('SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id  INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id')
@@ -119,7 +118,7 @@ async function viewRoles() {
     await userMenu();
 };
 
-// ------------\ ADD /--------------
+// -------------------------\ ADD /-------------------------- \\
 // creates new Employee into the db
 async function addEmployee() {
     
@@ -135,27 +134,28 @@ async function addEmployee() {
         type: 'list',  
         message: 'Select a Role',
         name: 'role',
-        choices: await rolesGenerator()
+        choices: await db.rolesGenerator()
       },
       {
         type: 'list',  
         message: 'Who is the Manager',
         name: 'manager',
-        choices: await namesGenerator()
+        choices: await db.namesGenerator()
       }
     ]).then(async function ({ firstName, lastName, role, manager }) {
 
         const [rows] = await connection.query('INSERT INTO employee SET ?', {
             first_name: firstName,
             last_name: lastName,
-            role_id: await getRoleId(role),
-            manager_id: await getEmployeeId(manager)
+            role_id: await cnv.getRoleId(role),
+            manager_id: await cnv.getEmployeeId(manager)
         })
         console.log(`succed, new employee: ${firstName} ${lastName}, added`)
         await userMenu()
     })
 
 }
+
 // creates new Department into the db
 async function addDepartment() {
     await inquirer.prompt(
@@ -189,14 +189,14 @@ async function addRole() {
         type: 'list',  
         message: 'Choose Department',
         name: 'department',
-        choices: await departmentGenerator()
+        choices: await db.departmentGenerator()
       }
     ]).then(async function ({ title, salary, department }) {
 
         const [rows] = await connection.query('INSERT INTO role SET ?', {
             title: title,
             salary: salary,
-            department_id: await getDepartmentId(department)
+            department_id: await cnv.getDepartmentId(department)
         })
         console.log(`succed, new Role: ${title}, added`)
         await userMenu()
@@ -204,100 +204,30 @@ async function addRole() {
 
 }
 
-
-// ------------\ UPDATE /--------------
+// ----------------------------\ UPDATE /------------------------------ \\
+// update employee role 
 async function updateEmployeeRole() {
     await inquirer.prompt([{
         type: 'list',  
         message: 'Choose Employee',
         name: 'name',
-        choices: await namesGenerator()
+        choices: await db.namesGenerator()
       },
       {
         type: 'list',  
         message: 'Choose New Role',
         name: 'role',
-        choices: await rolesGenerator()
+        choices: await db.rolesGenerator()
       }
     ]).then(async function ({ name, role }) {
         const [rows] = await connection.query('UPDATE employee SET ? WHERE ?',[
-            {role_id: await getRoleId(role)},
-            {id: await getEmployeeId(name)}
+            {role_id: await cnv.getRoleId(role)},
+            {id: await cnv.getEmployeeId(name)}
         ])
 
         console.log(`succed, Employee: ${name}, updated`)
         await userMenu()
     })
-}
-
-//------------------------------------\ Database /-----------------------------------
-// NAMES
-async function namesGenerator() {
-    const [names] = await connection.query('SELECT first_name, last_name FROM employee')
-    
-    names.forEach(employeeName => {
-        const fullName = employeeName.first_name + ' ' + employeeName.last_name
-        nameList.push(fullName)
-    });
-    // console.log(nameList) // =========== Names List Check
-    return nameList
-}
-
-// ROLES
-async function rolesGenerator() {
-    const [roles] = await connection.query('SELECT title FROM role')
-    
-    // Convert obj to arr
-    roles.forEach(role => {
-        rolesList.push(role.title)
-    });
-    // console.log(rolesList) // =========== Roles List Check
-    return rolesList
-}
-
-// DEPARTMENTS
-async function departmentGenerator() {
-    const [departments] = await connection.query('SELECT name FROM department')
-    
-    // Convert obj to arr
-    departments.forEach(department => {
-        departmentsList.push(department.name)
-    });
-    // console.log(departmentsList) // =========== Departments List Check
-    return departmentsList
-}
-// ----------------------- \ convert to ID / ----------------------------
-// Department
-async function getDepartmentId (department){
-    const [dpasID] = await connection.query('SELECT id, name FROM department')
-    
-    const dpasList = dpasID.find(dpa => {
-        return dpa.name == department
-    })
-    // console.log(dpasList)
-    return dpasList.id
-}
-
-// Employee
-async function getEmployeeId(manager){
-    const [emplsID] = await connection.query('SELECT id, first_name, last_name FROM employee')
-    
-    const emplsList = emplsID.find(empl => {
-        return `${empl.first_name} ${empl.last_name}` == manager
-    })
-    // console.log(mngsList)
-    return emplsList.id
-}
-
-// Role
-async function getRoleId(role){
-    const [rlsID] = await connection.query('SELECT id, title FROM role')
-    
-    const rlsList = rlsID.find(rl => {
-        return rl.title == role
-    })
-    // console.log(rlsList)
-    return rlsList.id
 }
 
 // =====================================================================================================================
