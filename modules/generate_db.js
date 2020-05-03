@@ -30,7 +30,7 @@ async function rolesGenerator() {
 }
 
 // DEPARTMENTS
-async function departmentGenerator() {
+async function departmentsGenerator() {
   const [departments] = await connection.query('SELECT name FROM department')
   
   // Convert obj to arr
@@ -51,15 +51,15 @@ const welcome = `
          ██\x1b[91m█████████\x1b[39m\x1b[91m M █\x1b[39m████              ██                  ██      
        ██\x1b[91m██████████████████\x1b[39m██           ██    ████████████████    
        ██████░░░░██░░██████            ███████  
-    ██░░░░████░░░██░░░░░░░██                     
-    ██░░░░████░░░░██░░░░░░██                       
+     ██░░░████░░░██░░░░░░░██                     
+     ██░░░████░░░░██░░░░░░██                       
        ████░░░░░░██████████                         
        ██░░░░░░░░░░░░░██
          ██░░░░░░░░░██
            ██░░░░░░██
          ██\x1b[94m████\x1b[39m\x1b[91m███\x1b[39m█
-       █\x1b[91m██████\x1b[39m\x1b[94m████\x1b[39m\x1b[91m██\x1b[39m█
-     █\x1b[91m██████\x1b[39m\x1b[94m███\x1b[39m\x1b[93m██\x1b[39m\x1b[94m███\x1b[39m\x1b[93m█\x1b[39m█
+        █\x1b[91m██████\x1b[39m\x1b[94m████\x1b[39m\x1b[91m██\x1b[39m█
+       █\x1b[91m█████\x1b[39m\x1b[94m███\x1b[39m\x1b[93m██\x1b[39m\x1b[94m███\x1b[39m\x1b[93m█\x1b[39m█
        ██░░░░░░\x1b[94m██████\x1b[39m█
          ██░░░░\x1b[94m██████\x1b[39m█
            ██\x1b[94m██████\x1b[39m██
@@ -67,9 +67,26 @@ const welcome = `
           █████████████
     `
 
+const goodbye = `
+              ████████          
+          ████▒▒▒▒▒▒▒▒████      
+        ██  ▒▒▒▒▒▒▒▒▒▒    ██    
+      ██    ▒▒        ▒▒    ██  
+      ██  ▒▒            ▒▒  ██  
+    ██▒▒▒▒▒▒            ▒▒▒▒▒▒██
+    ██  ▒▒▒▒            ▒▒▒▒  ██
+    ██  ▒▒▒▒▒▒        ▒▒▒▒▒▒  ██
+    ██▒▒▒▒████████████████▒▒▒▒██
+      ██████  ██    ██  ██████  
+        ██    ██    ██    ██    
+        ██                ██    
+          ██            ██      
+            ████████████
+`
 module.exports = {
   namesGenerator: namesGenerator,
   rolesGenerator: rolesGenerator,
-  departmentGenerator: departmentGenerator,
-  welcome: welcome
+  departmentsGenerator: departmentsGenerator,
+  welcome: welcome,
+  goodbye: goodbye
 };

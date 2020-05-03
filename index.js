@@ -28,6 +28,9 @@ const add_role = 'Add Role';
 const add_employee = 'Add Employee';
 const update_employee_role = 'Update Employee Role';
 const update_employee_manager = 'Update Employee Manager';
+const delete_employee = 'Delete Employee';
+const delete_department = 'Delete Department';
+const delete_role = 'Delete Role';
 const exit = 'Exit';
 
 // Principal Function to trigger the application
@@ -73,6 +76,9 @@ async function userMenu() {
             add_employee,
             update_employee_role,
             update_employee_manager,
+            delete_employee,
+            delete_department,
+            delete_role,
             exit
         ]
     }).then(async function (answer) {
@@ -106,8 +112,18 @@ async function userMenu() {
                 break;
             case update_employee_manager:
                 await updateEmployeeManager();
-                break;    
+                break;
+            case delete_employee:
+                await deleteEmployee();
+                break;
+            case delete_department:
+                await deleteDepartment();
+                break;
+            case delete_role:
+                await deleteRole();
+                break;          
             case exit:
+                console.log(db.goodbye)
                 console.log("\x1b[95m>>> Employee Tracker has ended <<<\x1b[39m");
                 connection.end();
                 break;
@@ -118,7 +134,7 @@ async function userMenu() {
 // ------------------------------------------------\ Async Functions /---------------------------------------------------
 
 // -------------------------\ VIEW /------------------------ \\
-// Display updated Employees list
+// Display updated Employees listzx 
 async function viewEmployees () {
     const [rows] = await connection.query('SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id  INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id')
     console.table(rows)
@@ -233,7 +249,7 @@ async function addRole() {
         type: 'list',  
         message: 'Choose Department',
         name: 'department',
-        choices: await db.departmentGenerator()
+        choices: await db.departmentsGenerator()
       }
     ]).then(async function ({ title, salary, department }) {
 
@@ -295,6 +311,67 @@ async function updateEmployeeManager() {
       ])
 
       console.log(`\x1b[92msucced, Employee: ${name}, Manager updated${space}\x1b[39m`)
+      await userMenu()
+  })
+}
+
+// ----------------------------\ DELETE /------------------------------ \\
+// Delete employee
+async function deleteEmployee() {
+  await inquirer.prompt([{
+      type: 'list',  
+      message: 'Choose Employee',
+      name: 'name',
+      choices: await db.namesGenerator()
+    }
+  ]).then(async function ({ name }) {
+      const [rows] = await connection.query('DELETE FROM employee WHERE ?', [
+        {
+          id: await cnv.getEmployeeId(name)  
+        }
+    ])
+
+      console.log(`\x1b[92msucced, Employee: ${name}, deleted${space}\x1b[39m`)
+      await userMenu()
+  })
+}
+
+// Delete department
+async function deleteDepartment() {
+  await inquirer.prompt([{
+      type: 'list',  
+      message: 'Choose Department',
+      name: 'department',
+      choices: await db.departmentsGenerator()
+    }
+  ]).then(async function ({ department }) {
+      const [rows] = await connection.query('DELETE FROM department WHERE ?', [
+        {
+          id: await cnv.getDepartmentId(department)  
+        }
+    ])
+
+      console.log(`\x1b[92msucced, Department: ${department}, deleted${space}\x1b[39m`)
+      await userMenu()
+  })
+}
+
+// Delete role
+async function deleteRole() {
+  await inquirer.prompt([{
+      type: 'list',  
+      message: 'Choose Role',
+      name: 'role',
+      choices: await db.rolesGenerator()
+    }
+  ]).then(async function ({ role }) {
+      const [rows] = await connection.query('DELETE FROM role WHERE ?', [
+        {
+          id: await cnv.getRoleId(role)  
+        }
+    ])
+
+      console.log(`\x1b[92msucced, Employee: ${role}, deleted${space}\x1b[39m`)
       await userMenu()
   })
 }
