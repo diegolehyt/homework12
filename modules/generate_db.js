@@ -1,5 +1,5 @@
 
-//------------------------------------\ Database /-----------------------------------
+//------------------------------------\ Database /----------------------------------- \\
 // ini Arrays to display updated choices 
 const nameList = [];
 const rolesList = [];
@@ -41,8 +41,35 @@ async function departmentGenerator() {
   return departmentsList
 }
 
+// ----------------------------\ Text /------------------------- \\
+const welcome = `
+                                            ██████████████████
+                                          ██                  ██  
+                                         ██      \x1b[96mWELCOME!\x1b[39m      ██
+                                         ██         \x1b[96mto\x1b[39m         ██
+          ██████████████                 ██  \x1b[96mEmployee Tracker\x1b[39m  ██          
+         ██\x1b[91m█████████\x1b[39m\x1b[91m M █\x1b[39m████              ██                  ██      
+       ██\x1b[91m██████████████████\x1b[39m██           ██    ████████████████    
+       ██████░░░░██░░██████            ███████  
+    ██░░░░████░░░██░░░░░░░██                     
+    ██░░░░████░░░░██░░░░░░██                       
+       ████░░░░░░██████████                         
+       ██░░░░░░░░░░░░░██
+         ██░░░░░░░░░██
+           ██░░░░░░██
+         ██\x1b[94m████\x1b[39m\x1b[91m███\x1b[39m█
+       █\x1b[91m██████\x1b[39m\x1b[94m████\x1b[39m\x1b[91m██\x1b[39m█
+     █\x1b[91m██████\x1b[39m\x1b[94m███\x1b[39m\x1b[93m██\x1b[39m\x1b[94m███\x1b[39m\x1b[93m█\x1b[39m█
+       ██░░░░░░\x1b[94m██████\x1b[39m█
+         ██░░░░\x1b[94m██████\x1b[39m█
+           ██\x1b[94m██████\x1b[39m██
+          ██         ██
+          █████████████
+    `
+
 module.exports = {
   namesGenerator: namesGenerator,
   rolesGenerator: rolesGenerator,
-  departmentGenerator: departmentGenerator
+  departmentGenerator: departmentGenerator,
+  welcome: welcome
 };

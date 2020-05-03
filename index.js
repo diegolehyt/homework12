@@ -14,14 +14,20 @@ const cnv = require('./modules/convert_ID.js');
 // Connection var
 let connnection
 
+// Space between lines
+const space = '\n \n'
+
 // inquirer menu
 const view_employees = 'View Employees';
+const view_employees_by_manager = 'View Employees by Manager'
 const view_departments = 'View Departments';
 const view_roles = 'View Roles';
+const view_budgets = 'View Budgets';
 const add_department = 'Add Department';
 const add_role = 'Add Role';
 const add_employee = 'Add Employee';
 const update_employee_role = 'Update Employee Role';
+const update_employee_manager = 'Update Employee Manager';
 const exit = 'Exit';
 
 // Principal Function to trigger the application
@@ -31,7 +37,7 @@ main()
 async function main () { 
   try {
     await connect()
-    console.log(welcome) 
+    console.log(db.welcome) 
     await userMenu()
   } catch (err) {
     console.error(err)
@@ -58,12 +64,15 @@ async function userMenu() {
         message: "\x1b[96m>>> What would you like to do? <<<\x1b[39m" + space,
         choices: [
             view_employees,
+            view_employees_by_manager,
             view_departments,
             view_roles,
+            view_budgets,
             add_department,
             add_role,
             add_employee,
             update_employee_role,
+            update_employee_manager,
             exit
         ]
     }).then(async function (answer) {
@@ -71,11 +80,17 @@ async function userMenu() {
             case view_employees:
                 await viewEmployees();
                 break;
+            case view_employees_by_manager:
+                await viewEmployeesByManager();
+                break;    
             case view_departments:
                 await viewDepartments();
                 break;
             case view_roles:
                 await viewRoles();
+                break;
+            case view_budgets:
+                await viewBudgets();
                 break;
             case add_employee:
                 await addEmployee();
@@ -89,13 +104,16 @@ async function userMenu() {
             case update_employee_role:
                 await updateEmployeeRole();
                 break;
+            case update_employee_manager:
+                await updateEmployeeManager();
+                break;    
             case exit:
                 console.log("\x1b[95m>>> Employee Tracker has ended <<<\x1b[39m");
                 connection.end();
                 break;
         };
     });
-};
+}; 
 
 // ------------------------------------------------\ Async Functions /---------------------------------------------------
 
@@ -106,17 +124,42 @@ async function viewEmployees () {
     console.table(rows)
     await userMenu();
 }
+
+// Display updated Employees list by Manager
+async function viewEmployeesByManager() {
+  await inquirer.prompt(
+      {
+        type: 'list',  
+        message: 'Choose the Manager',
+        name: 'manager',
+        choices: await db.namesGenerator()
+      }
+  ).then(async function ({ manager }) {
+      const [rows] = await connection.query(`SELECT e.id, e.first_name, e.last_name, role.title, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id WHERE m.id = ${await cnv.getEmployeeId(manager)}`)
+      console.table(rows)
+      await userMenu()
+  })
+}
+
 // Display updated Departments list
 async function viewDepartments() {
     const [rows] = await connection.query('SELECT * FROM department')
     console.table(rows)
     await userMenu();
 };
+
 // Display updated Roles list
 async function viewRoles() {
     const [rows] = await connection.query('SELECT role.id, title, salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id')
     console.table(rows)
     await userMenu();
+};
+
+// Display updated Budgets list, organized by departments
+async function viewBudgets() {
+  const [rows] = await connection.query('SELECT department.id, name, SUM(role.salary) total_budget FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id GROUP BY department.id')
+  console.table(rows)
+  await userMenu();
 };
 
 // -------------------------\ ADD /-------------------------- \\
@@ -206,7 +249,7 @@ async function addRole() {
 }
 
 // ----------------------------\ UPDATE /------------------------------ \\
-// update employee role 
+// update employee Role 
 async function updateEmployeeRole() {
     await inquirer.prompt([{
         type: 'list',  
@@ -230,33 +273,31 @@ async function updateEmployeeRole() {
         await userMenu()
     })
 }
-// \x1b[93m██\x1b[39m
-// ----------------------------\ Text /------------------------- \\
-const welcome = `
-                                            ██████████████████
-                                          ██                  ██  
-                                         ██      \x1b[96mWELCOME!\x1b[39m      ██
-                                         ██         \x1b[96mto\x1b[39m         ██
-          ██████████████                 ██  \x1b[96mEmployee Tracker\x1b[39m  ██          
-         ██\x1b[91m█████████\x1b[39m\x1b[91m M █\x1b[39m████              ██                  ██      
-       ██\x1b[91m██████████████████\x1b[39m██           ██    ████████████████    
-       ██████░░░░██░░██████            ███████  
-    ██░░░░████░░░██░░░░░░░██                     
-    ██░░░░████░░░░██░░░░░░██                       
-       ████░░░░░░██████████                         
-       ██░░░░░░░░░░░░░██
-         ██░░░░░░░░░██
-           ██░░░░░░██
-         ██\x1b[94m████\x1b[39m\x1b[91m███\x1b[39m█
-       █\x1b[91m██████\x1b[39m\x1b[94m████\x1b[39m\x1b[91m██\x1b[39m█
-     █\x1b[91m██████\x1b[39m\x1b[94m███\x1b[39m\x1b[93m██\x1b[39m\x1b[94m███\x1b[39m\x1b[93m█\x1b[39m█
-       ██░░░░░░\x1b[94m██████\x1b[39m█
-         ██░░░░\x1b[94m██████\x1b[39m█
-           ██\x1b[94m██████\x1b[39m██
-          ██         ██
-          █████████████
-    `
-const space = '\n \n'
+
+// update employee Manager 
+async function updateEmployeeManager() {
+  await inquirer.prompt([{
+      type: 'list',  
+      message: 'Choose Employee',
+      name: 'name',
+      choices: await db.namesGenerator()
+    },
+    {
+      type: 'list',  
+      message: 'Choose New Manager',
+      name: 'manager',
+      choices: await db.namesGenerator()
+    }
+  ]).then(async function ({ name, manager }) {
+      const [rows] = await connection.query('UPDATE employee SET ? WHERE ?',[
+          {manager_id: await cnv.getEmployeeId(manager)},
+          {id: await cnv.getEmployeeId(name)}
+      ])
+
+      console.log(`\x1b[92msucced, Employee: ${name}, Manager updated${space}\x1b[39m`)
+      await userMenu()
+  })
+}
 
 // =====================================================================================================================
 // ====================================================\ END /==========================================================
