@@ -47,7 +47,7 @@ async function connect () {
     password: '',   // ================ Remember to add your PASSWORD here!
     database: 'employees_db'
   })
-  console.log(`>>> Connected to MySQL as id: ${connection.threadId} <<<`)
+  console.log(`\x1b[95m >>> Connected to MySQL as id: ${connection.threadId} <<< \x1b[39m`)
 }
 
 // ------------------------------\ Prompt Menu /---------------------------------- \\
@@ -230,14 +230,16 @@ async function updateEmployeeRole() {
         await userMenu()
     })
 }
+// \x1b[93m██\x1b[39m
 // ----------------------------\ Text /------------------------- \\
 const welcome = `
                                             ██████████████████
-                                          ██                  ██
-                                         ██     \x1b[92mWelcome to\x1b[39m     ██
-          ██████████████                 ██  Employee Tracker  ██          
-         ██▓▓▓▓▓▓▓▓▓ M ▓████              ██                  ██      
-       ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██           ██    ████████████████    
+                                          ██                  ██  
+                                         ██      \x1b[96mWELCOME!\x1b[39m      ██
+                                         ██         \x1b[96mto\x1b[39m         ██
+          ██████████████                 ██  \x1b[96mEmployee Tracker\x1b[39m  ██          
+         ██\x1b[91m█████████\x1b[39m\x1b[91m M █\x1b[39m████              ██                  ██      
+       ██\x1b[91m██████████████████\x1b[39m██           ██    ████████████████    
        ██████░░░░██░░██████            ███████  
     ██░░░░████░░░██░░░░░░░██                     
     ██░░░░████░░░░██░░░░░░██                       
@@ -245,13 +247,13 @@ const welcome = `
        ██░░░░░░░░░░░░░██
          ██░░░░░░░░░██
            ██░░░░░░██
-         ██▓▓████▓▓▓█
-       █▓▓▓▓▓▓████▓▓█
-     █▓▓▓▓▓▓███░░███░
-       ██░░░░░░███████
-         ██░░░░███████
-           ██████████
-          ██▓▓▓▓▓▓▓▓▓██
+         ██\x1b[94m████\x1b[39m\x1b[91m███\x1b[39m█
+       █\x1b[91m██████\x1b[39m\x1b[94m████\x1b[39m\x1b[91m██\x1b[39m█
+     █\x1b[91m██████\x1b[39m\x1b[94m███\x1b[39m\x1b[93m██\x1b[39m\x1b[94m███\x1b[39m\x1b[93m█\x1b[39m█
+       ██░░░░░░\x1b[94m██████\x1b[39m█
+         ██░░░░\x1b[94m██████\x1b[39m█
+           ██\x1b[94m██████\x1b[39m██
+          ██         ██
           █████████████
     `
 const space = '\n \n'
