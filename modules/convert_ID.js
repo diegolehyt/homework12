@@ -37,5 +37,5 @@ async function getRoleId(role){
 module.exports = {
 getDepartmentId: getDepartmentId,
 getRoleId: getRoleId,
-getEmployeeId: getEmployeeId,
+getEmployeeId: getEmployeeId
 };

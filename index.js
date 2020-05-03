@@ -27,10 +27,11 @@ const exit = 'Exit';
 // Principal Function to trigger the application
 main()
 
-// ------------------------------\ Setup /------------------------------------
-async function main () {
+// ------------------------------\ Setup /------------------------------------ \\
+async function main () { 
   try {
     await connect()
+    console.log(welcome) 
     await userMenu()
   } catch (err) {
     console.error(err)
@@ -43,18 +44,18 @@ async function connect () {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'sum182magodeoz',   // ================ Remember to add your PASSWORD here!
+    password: '',   // ================ Remember to add your PASSWORD here!
     database: 'employees_db'
   })
-  console.log('Connected to MySQL as id: ' + connection.threadId)
+  console.log(`>>> Connected to MySQL as id: ${connection.threadId} <<<`)
 }
 
-// ------------------------------\ Prompt Menu /----------------------------------
+// ------------------------------\ Prompt Menu /---------------------------------- \\
 async function userMenu() {
     await inquirer.prompt({
         name: "action",
         type: "list",
-        message: "What would you like to do?",
+        message: "\x1b[96m>>> What would you like to do? <<<\x1b[39m" + space,
         choices: [
             view_employees,
             view_departments,
@@ -89,7 +90,7 @@ async function userMenu() {
                 await updateEmployeeRole();
                 break;
             case exit:
-                console.log("Employee Tracker has ended");
+                console.log("\x1b[95m>>> Employee Tracker has ended <<<\x1b[39m");
                 connection.end();
                 break;
         };
@@ -150,7 +151,7 @@ async function addEmployee() {
             role_id: await cnv.getRoleId(role),
             manager_id: await cnv.getEmployeeId(manager)
         })
-        console.log(`succed, new employee: ${firstName} ${lastName}, added`)
+        console.log(`\x1b[92msucced, new employee: ${firstName} ${lastName}, added${space}\x1b[39m`)
         await userMenu()
     })
 
@@ -169,7 +170,7 @@ async function addDepartment() {
         const [rows] = await connection.query('INSERT INTO department SET ?',{
                 name: department
             })
-        console.log(`Succed, new department: ${department}, added`)
+        console.log(`\x1b[92mSucced, new department: ${department}, added${space}\x1b[39m`)
         await userMenu()
     })
 }
@@ -198,7 +199,7 @@ async function addRole() {
             salary: salary,
             department_id: await cnv.getDepartmentId(department)
         })
-        console.log(`succed, new Role: ${title}, added`)
+        console.log(`\x1b[92msucced, new Role: ${title}, added${space}\x1b[39m`)
         await userMenu()
     })
 
@@ -225,10 +226,35 @@ async function updateEmployeeRole() {
             {id: await cnv.getEmployeeId(name)}
         ])
 
-        console.log(`succed, Employee: ${name}, updated`)
+        console.log(`\x1b[92msucced, Employee: ${name}, Role updated${space}\x1b[39m`)
         await userMenu()
     })
 }
+// ----------------------------\ Text /------------------------- \\
+const welcome = `
+                                            ██████████████████
+                                          ██                  ██
+                                         ██     \x1b[92mWelcome to\x1b[39m     ██
+          ██████████████                 ██  Employee Tracker  ██          
+         ██▓▓▓▓▓▓▓▓▓ M ▓████              ██                  ██      
+       ██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██           ██    ████████████████    
+       ██████░░░░██░░██████            ███████  
+    ██░░░░████░░░██░░░░░░░██                     
+    ██░░░░████░░░░██░░░░░░██                       
+       ████░░░░░░██████████                         
+       ██░░░░░░░░░░░░░██
+         ██░░░░░░░░░██
+           ██░░░░░░██
+         ██▓▓████▓▓▓█
+       █▓▓▓▓▓▓████▓▓█
+     █▓▓▓▓▓▓███░░███░
+       ██░░░░░░███████
+         ██░░░░███████
+           ██████████
+          ██▓▓▓▓▓▓▓▓▓██
+          █████████████
+    `
+const space = '\n \n'
 
 // =====================================================================================================================
 // ====================================================\ END /==========================================================

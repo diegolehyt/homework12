@@ -44,5 +44,5 @@ async function departmentGenerator() {
 module.exports = {
   namesGenerator: namesGenerator,
   rolesGenerator: rolesGenerator,
-  departmentGenerator: departmentGenerator,
+  departmentGenerator: departmentGenerator
 };
