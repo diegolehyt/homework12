@@ -83,10 +83,32 @@ const goodbye = `
           ██            ██      
             ████████████
 `
+const main = `  \x1b[96m>>> What would you like to do? <<<\x1b[39m`
+
+const views = `
+   \x1b[93m-- VIEWS --\x1b[39m`
+
+const add = `
+    \x1b[93m-- ADD --\x1b[39m`
+
+const  updates = `
+\x1b[93m  -- UPDATES --\x1b[39m`
+
+const deletes = `
+\x1b[93m  -- DELETES --\x1b[39m` 
+
+const exit = `  \x1b[91m>> Exit <<\x1b[39m`
+
 module.exports = {
   namesGenerator: namesGenerator,
   rolesGenerator: rolesGenerator,
   departmentsGenerator: departmentsGenerator,
   welcome: welcome,
-  goodbye: goodbye
+  goodbye: goodbye,
+  views: views,
+  add: add,
+  updates: updates,
+  deletes: deletes,
+  main: main,
+  exit: exit
 };

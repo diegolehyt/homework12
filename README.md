@@ -1,9 +1,21 @@
 # Employee Traker ![Diego](https://img.shields.io/badge/version-v1.0.0-yellow) ![code size](https://img.shields.io/github/languages/code-size/diegolehyt/homework12) ![language](https://img.shields.io/github/languages/top/diegolehyt/homework12) ![last comit](https://img.shields.io/github/last-commit/diegolehyt/homework12) ![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/diegolehyt/homework12) 
-### Homework - 12
+### Homework - 12 / Employee Managment System
 
- node server.js
+- data VIEWS
 
-![Main Page](assests/1.gif)
+![VIEW](assets/1.gif)
+
+- ADD data
+
+![ADD](assets/2.gif)
+
+- UPDATE data
+
+![UPDATE](assets/3.gif)
+
+- DELETE data
+
+![DELETE](assets/4.gif)
 
 ## 📌Table of Content
 
@@ -27,17 +39,16 @@ So that I can organize and plan my business
 ```
 - Open the application using "command line", (recomended: GitBash).
 
-![node server](images/1.png)
+![node server](assets/1.png)
 
 
 ## 💿Installation
-  ### Prerequisites
     1. Install node.js  
     2. Clone the repository
     3. npm install
 
 ## ▶️Usage
-Open the app using `npm start` in your terminal. Then after hitting the start button, you will be able to write, save and delete notes. 
+Open the app using ```npm start``` in your terminal. Then choose as many options as you need from the Menu and when you are ready to leave, select "exit" in the app menu.  
 
 
 ## 📊Test
@@ -49,21 +60,26 @@ Open the app using `npm start` in your terminal. Then after hitting the start bu
 ## 🤝Contributing
 Feel free to pull request and give me your suggestions if any.
           
-## ⚖️License  ![License](https://img.shields.io/github/license/diegolehyt/homework11)
+## ⚖️License  ![License](https://img.shields.io/github/license/diegolehyt/homework12)
 This project is under the MIT License.
 
 ## 📑Details
 
-This repository content the files: JavaScript "server.js", Mit license"LICENSE.txt", "package.json", "package-lock.json",db Folder (data base json), public folder, "node_modules" folder and an "image" folder with the captures and gifs for this Readme File.
+This repository content the files: JavaScript "index.js" (main app), Mit license"LICENSE.txt", "package.json", "package-lock.json",modules folder (local modules), node_modules" folder and an "assets" folder with the captures and gifs for this Readme File.
 
 ## 📀Features
-- Fully responsive
-  ![phone](images/3.png)
+- Super Mario Menu
 
- ## 🔗URL  
+  ![mario](assets/2.png)
 
-- The URL to open from Heroku, the Express Server in your Browser is "https://mighty-eyrie-28086.herokuapp.com/"
-- Check my Demos on Youtube "https://www.youtube.com/channel/UCev6xJU1FGx1IbRjQhtjKcQ"
+## 🔗URL  
+
+- The URL to open the repo page on your Browser is "https://diegolehyt.github.io/homework12/"
+- Visit my Heroku page "https://dashboard.heroku.com/apps/mighty-eyrie-28086"
+- Click on the image or the Link to open the Demo on Youtube "https://youtu.be/Cs4vzQj-H3I"
+
+    [![Alt text](assets/youtube6.png)](https://youtu.be/Cs4vzQj-H3I)
+
 
 ## 👤Questions  
 ![youtube](https://img.shields.io/badge/YouTube-red?style=flat&logo=youtube)  ![Heroku](https://img.shields.io/badge/Heroku-purple?style=flat&logo=heroku)  ![Social](https://img.shields.io/github/followers/diegolehyt?style=social) 

@@ -30,8 +30,7 @@ const update_employee_role = 'Update Employee Role';
 const update_employee_manager = 'Update Employee Manager';
 const delete_employee = 'Delete Employee';
 const delete_department = 'Delete Department';
-const delete_role = 'Delete Role';
-const exit = 'Exit';
+const delete_role = 'Delete Role\n';
 
 // Principal Function to trigger the application
 main()
@@ -64,22 +63,32 @@ async function userMenu() {
     await inquirer.prompt({
         name: "action",
         type: "list",
-        message: "\x1b[96m>>> What would you like to do? <<<\x1b[39m" + space,
+        pageSize: 13,
+        message: db.main,
         choices: [
+            new inquirer.Separator(db.views),
+            new inquirer.Separator(),
             view_employees,
             view_employees_by_manager,
             view_departments,
             view_roles,
             view_budgets,
+            new inquirer.Separator(db.add),
+            new inquirer.Separator(),
             add_department,
             add_role,
             add_employee,
+            new inquirer.Separator(db.updates),
+            new inquirer.Separator(),
             update_employee_role,
             update_employee_manager,
+            new inquirer.Separator(db.deletes),
+            new inquirer.Separator(),
             delete_employee,
             delete_department,
             delete_role,
-            exit
+            db.exit,
+            new inquirer.Separator()
         ]
     }).then(async function (answer) {
         switch (answer.action) {
@@ -122,9 +131,9 @@ async function userMenu() {
             case delete_role:
                 await deleteRole();
                 break;          
-            case exit:
+            case db.exit:
                 console.log(db.goodbye)
-                console.log("\x1b[95m>>> Employee Tracker has ended <<<\x1b[39m");
+                console.log(` \x1b[95m>>> Employee Tracker has ended <<<\x1b[39m`);
                 connection.end();
                 break;
         };
@@ -134,10 +143,12 @@ async function userMenu() {
 // ------------------------------------------------\ Async Functions /---------------------------------------------------
 
 // -------------------------\ VIEW /------------------------ \\
-// Display updated Employees listzx 
+// Display updated Employees list 
 async function viewEmployees () {
     const [rows] = await connection.query('SELECT e.id, e.first_name, e.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id  INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id')
+    console.log(space)
     console.table(rows)
+    console.log('\n')
     await userMenu();
 }
 
@@ -152,7 +163,9 @@ async function viewEmployeesByManager() {
       }
   ).then(async function ({ manager }) {
       const [rows] = await connection.query(`SELECT e.id, e.first_name, e.last_name, role.title, CONCAT(m.first_name, " ", m.last_name) AS manager FROM employee e INNER JOIN role ON e.role_id = role.id INNER JOIN department ON role.department_id = department.id LEFT JOIN employee m ON m.id = e.manager_id WHERE m.id = ${await cnv.getEmployeeId(manager)}`)
+      console.log(space)
       console.table(rows)
+      console.log('\n')
       await userMenu()
   })
 }
@@ -160,21 +173,27 @@ async function viewEmployeesByManager() {
 // Display updated Departments list
 async function viewDepartments() {
     const [rows] = await connection.query('SELECT * FROM department')
+    console.log(space)
     console.table(rows)
+    console.log('\n')
     await userMenu();
 };
 
 // Display updated Roles list
 async function viewRoles() {
     const [rows] = await connection.query('SELECT role.id, title, salary, department.name AS department FROM role INNER JOIN department ON role.department_id = department.id')
+    console.log(space)
     console.table(rows)
+    console.log('\n')
     await userMenu();
 };
 
 // Display updated Budgets list, organized by departments
 async function viewBudgets() {
   const [rows] = await connection.query('SELECT department.id, name, SUM(role.salary) total_budget FROM department INNER JOIN role ON department.id = role.department_id INNER JOIN employee ON role.id = employee.role_id GROUP BY department.id')
+  console.log(space)
   console.table(rows)
+  console.log('\n')
   await userMenu();
 };
 
@@ -371,7 +390,7 @@ async function deleteRole() {
         }
     ])
 
-      console.log(`\x1b[92msucced, Employee: ${role}, deleted${space}\x1b[39m`)
+      console.log(`\x1b[92msucced, Role: ${role}, deleted${space}\x1b[39m`)
       await userMenu()
   })
 }
