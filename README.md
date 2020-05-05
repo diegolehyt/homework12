@@ -2,7 +2,7 @@
 ### Homework - 12 / Employee Managment System
 
 
-- Link to the Full Video Demo at the end [GO ⬇️](#url)
+- Link to the Full Video Demo at the end. [>> GO ⬇️ <<](#url)
 
 ![VIEW](assets/0.gif)
 
@@ -87,7 +87,7 @@ This repository content the files: JavaScript "index.js" (main app), Mit license
 
 
 ## 👤Questions  
-![youtube](https://img.shields.io/badge/YouTube-red?style=flat&logo=youtube)  ![Heroku](https://img.shields.io/badge/Heroku-purple?style=flat&logo=heroku)  ![Social](https://img.shields.io/github/followers/diegolehyt?style=social) 
+![youtube](https://img.shields.io/badge/YouTube-red?style=flat&logo=youtube)  ![Heroku](https://img.shields.io/badge/Heroku-purple?style=flat&logo=heroku)  ![MySQL](https://img.shields.io/badge/MySQL-9cf?style=flat&logo=mysql)  ![Social](https://img.shields.io/github/followers/diegolehyt?style=social) 
 
 ![Profile img](https://avatars1.githubusercontent.com/u/59458188?v=4)
 
