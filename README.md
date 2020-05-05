@@ -1,4 +1,4 @@
-# Employee Traker ![Diego](https://img.shields.io/badge/version-v1.0.0-yellow) ![code size](https://img.shields.io/github/languages/code-size/diegolehyt/homework12) ![language](https://img.shields.io/github/languages/top/diegolehyt/homework12) ![last comit](https://img.shields.io/github/last-commit/diegolehyt/homework12) ![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/diegolehyt/homework11) 
+# Employee Traker ![Diego](https://img.shields.io/badge/version-v1.0.0-yellow) ![code size](https://img.shields.io/github/languages/code-size/diegolehyt/homework12) ![language](https://img.shields.io/github/languages/top/diegolehyt/homework12) ![last comit](https://img.shields.io/github/last-commit/diegolehyt/homework12) ![vulnerabilities](https://img.shields.io/snyk/vulnerabilities/github/diegolehyt/homework12) 
 ### Homework - 12 / Employee Managment System
 
 
